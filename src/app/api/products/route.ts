@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../lib/prisma';
 import { z } from 'zod';
-import { Prisma } from '../../../generated/prisma/client';
+import type { Prisma } from "@prisma/client";
+
 
 const createProductSchema = z.object({
   name: z.string().min(1, 'Name is required'),
