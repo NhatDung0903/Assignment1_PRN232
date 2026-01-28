@@ -1,36 +1,113 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Clothing E-Commerce Website
 
-## Getting Started
+A simple full-stack e-commerce website for clothing products built with Next.js, TypeScript, TailwindCSS, and PostgreSQL with Prisma ORM.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Product CRUD operations (Create, Read, Update, Delete)
+- REST API with proper validation using Zod
+- Responsive UI with TailwindCSS
+- PostgreSQL database with Prisma ORM
+- Next.js App Router
+
+## Tech Stack
+
+- **Frontend**: Next.js (App Router), TypeScript, TailwindCSS
+- **Backend**: Next.js API Routes
+- **Database**: PostgreSQL with Prisma ORM
+- **Validation**: Zod
+
+## Setup Instructions
+
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+2. **Set up environment variables**:
+   - Create a `.env` file in the root directory
+   - Add your PostgreSQL connection strings (recommended: Neon - https://neon.tech):
+     ```
+     DATABASE_URL="postgresql://username:password@hostname/database?sslmode=require"
+     DIRECT_URL="postgresql://username:password@hostname/database?sslmode=require"
+     ```
+
+3. **Run database migrations**:
+   ```bash
+   npx prisma migrate dev --name init
+   ```
+
+4. **Seed the database with sample data**:
+   ```bash
+   npx prisma db seed
+   ```
+
+5. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
+
+6. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Features
+
+- **Home Page**: Hero section with featured products grid, search, filter, sort, and pagination
+- **Products Page**: All products with full filtering and pagination
+- **Product Detail**: Individual product view with edit/delete actions
+- **Admin Dashboard**: Stats cards and admin table for product management
+- **Create/Edit Modals**: Modal-based forms for adding/editing products
+- **Mobile Navigation**: Bottom navigation for mobile devices
+- **Toast Notifications**: User feedback for actions
+- **API Documentation**: Floating panel with CRUD endpoint details
+
+## Deployment
+
+- Set the `DATABASE_URL` and `DIRECT_URL` environment variables on your deployment platform (e.g., Vercel).
+- The app uses relative API URLs, so no additional configuration is needed for production.
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── api/products/
+│   │   ├── route.ts          # GET, POST /api/products
+│   │   └── [id]/
+│   │       └── route.ts      # GET, PUT, DELETE /api/products/:id
+│   ├── products/
+│   │   ├── [id]/
+│   │   │   ├── page.tsx      # Product detail page
+│   │   │   ├── edit/
+│   │   │   │   └── page.tsx  # Edit product page
+│   │   │   └── not-found.tsx # 404 page for products
+│   │   └── new/
+│   │       └── page.tsx      # Create product page
+│   ├── layout.tsx            # Root layout with NavBar
+│   └── page.tsx              # Home page (product list)
+├── components/
+│   ├── NavBar.tsx            # Navigation component
+│   ├── ProductCard.tsx       # Product card component
+│   └── ProductForm.tsx       # Reusable form for create/edit
+└── generated/prisma/         # Prisma client
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deployment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This project is designed to be deployed on Vercel. Make sure to:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Set the `DATABASE_URL` environment variable in your Vercel project settings
+2. Run `npx prisma migrate deploy` for production database setup
 
-## Learn More
+## Product Model
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```prisma
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  image       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+```
