@@ -2,8 +2,11 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import ProductModal from "./ProductModal";
 import DeleteConfirmModal from "./DeleteConfirmModal";
+import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Product {
   id: number;
@@ -16,17 +19,41 @@ interface Product {
 interface ProductCardProps {
   product: Product;
   onDelete?: (id: number) => void;
+  showAdminActions?: boolean;
 }
 
 const FALLBACK_IMG = "https://via.placeholder.com/600x400?text=No+Image";
 
-export default function ProductCard({ product, onDelete }: ProductCardProps) {
+export default function ProductCard({ product, onDelete, showAdminActions = false }: ProductCardProps) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [imgSrc, setImgSrc] = useState<string>(product.image || "");
+  const [addedToCart, setAddedToCart] = useState(false);
+  const { addItem } = useCart();
+  const { user } = useAuth();
+  const router = useRouter();
 
   const handleDelete = () => {
     if (onDelete) onDelete(product.id);
+  };
+
+  const handleAddToCart = () => {
+    if (!user) {
+      if (confirm('You need to login to add products to cart. Go to login page?')) {
+        router.push('/login');
+      }
+      return;
+    }
+
+    addItem({
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      image: product.image || null,
+    });
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000);
   };
 
   // Nếu product.image thay đổi sau khi edit, sync lại imgSrc
@@ -68,28 +95,51 @@ export default function ProductCard({ product, onDelete }: ProductCardProps) {
           ${Number(product.price).toFixed(2)}
         </p>
 
-        <div className="flex space-x-2">
-          <Link
-            href={`/products/${product.id}`}
-            className="flex-1 bg-indigo-600 text-white text-center py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg"
-          >
-            View
-          </Link>
+        {showAdminActions ? (
+          <div className="flex space-x-2">
+            <Link
+              href={`/products/${product.id}`}
+              className="flex-1 bg-indigo-600 text-white text-center py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg"
+            >
+              View
+            </Link>
 
-          <button
-            onClick={() => setShowEditModal(true)}
-            className="flex-1 bg-amber-500 text-white py-3 rounded-lg font-semibold hover:bg-amber-600 transition-all duration-300 shadow-md hover:shadow-lg"
-          >
-            Edit
-          </button>
+            <button
+              onClick={() => setShowEditModal(true)}
+              className="flex-1 bg-amber-500 text-white py-3 rounded-lg font-semibold hover:bg-amber-600 transition-all duration-300 shadow-md hover:shadow-lg"
+            >
+              Edit
+            </button>
 
-          <button
-            onClick={() => setShowDeleteModal(true)}
-            className="flex-1 bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition-all duration-300 shadow-md hover:shadow-lg"
-          >
-            Delete
-          </button>
-        </div>
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              className="flex-1 bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition-all duration-300 shadow-md hover:shadow-lg"
+            >
+              Delete
+            </button>
+          </div>
+        ) : (
+          <div className="flex space-x-2">
+            <Link
+              href={`/products/${product.id}`}
+              className="flex-1 bg-indigo-600 text-white text-center py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg"
+            >
+              View Details
+            </Link>
+
+            <button
+              onClick={handleAddToCart}
+              disabled={addedToCart}
+              className={`flex-1 py-3 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg ${
+                addedToCart
+                  ? 'bg-green-500 text-white cursor-default'
+                  : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600'
+              }`}
+            >
+              {addedToCart ? '✓ Added!' : 'Add to Cart'}
+            </button>
+          </div>
+        )}
       </div>
 
       <ProductModal isOpen={showEditModal} onClose={() => setShowEditModal(false)} product={product} />

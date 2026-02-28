@@ -15,9 +15,10 @@ interface Product {
 interface ProductsGridProps {
   initialProducts?: Product[];
   showFilters?: boolean;
+  showAdminActions?: boolean;
 }
 
-export default function ProductsGrid({ initialProducts = [], showFilters = true }: ProductsGridProps) {
+export default function ProductsGrid({ initialProducts = [], showFilters = true, showAdminActions = false }: ProductsGridProps) {
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [loading, setLoading] = useState(!initialProducts.length);
   const [page, setPage] = useState(1);
@@ -84,7 +85,7 @@ export default function ProductsGrid({ initialProducts = [], showFilters = true 
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
             {products.map(product => (
-              <ProductCard key={product.id} product={product} onDelete={handleDelete} />
+              <ProductCard key={product.id} product={product} onDelete={handleDelete} showAdminActions={showAdminActions} />
             ))}
           </div>
 

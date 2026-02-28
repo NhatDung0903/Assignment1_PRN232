@@ -93,7 +93,7 @@ export default function ProductModal({ isOpen, onClose, product }: ProductModalP
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
+              className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-400"
               placeholder="Enter product name"
               required
             />
@@ -103,7 +103,7 @@ export default function ProductModal({ isOpen, onClose, product }: ProductModalP
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 h-32 resize-none"
+              className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 h-32 resize-none text-gray-900 placeholder-gray-400"
               placeholder="Enter product description"
               required
             />
@@ -115,7 +115,7 @@ export default function ProductModal({ isOpen, onClose, product }: ProductModalP
               step="0.01"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
+              className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-400"
               placeholder="0.00"
               required
             />
@@ -126,7 +126,7 @@ export default function ProductModal({ isOpen, onClose, product }: ProductModalP
               type="url"
               value={image}
               onChange={(e) => setImage(e.target.value)}
-              className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
+              className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-400"
               placeholder="https://example.com/image.jpg"
             />
           </div>

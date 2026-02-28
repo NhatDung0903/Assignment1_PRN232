@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../lib/prisma';
 import { z } from 'zod';
-import type { Prisma } from "@prisma/client";
+import { Prisma } from '@prisma/client';
+import { getAuthUser } from '@/lib/auth';
 
 
 const createProductSchema = z.object({
@@ -76,6 +77,15 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    // Check authentication
+    const authUser = await getAuthUser();
+    if (!authUser) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const validatedData = createProductSchema.parse(body);
 

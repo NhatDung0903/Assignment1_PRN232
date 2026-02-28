@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../lib/prisma';
 import { z } from 'zod';
+import { getAuthUser } from '@/lib/auth';
 
 const updateProductSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -41,6 +42,15 @@ export async function PUT(
 ) {
   const { id } = await params;
   try {
+    // Check authentication
+    const authUser = await getAuthUser();
+    if (!authUser) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
     const productId = parseInt(id);
     if (isNaN(productId)) {
       return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
@@ -76,6 +86,15 @@ export async function DELETE(
 ) {
   const { id } = await params;
   try {
+    // Check authentication
+    const authUser = await getAuthUser();
+    if (!authUser) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
     const productId = parseInt(id);
     if (isNaN(productId) || productId <= 0) {
       return NextResponse.json({ message: 'Invalid id' }, { status: 400 });

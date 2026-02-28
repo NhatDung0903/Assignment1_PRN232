@@ -5,6 +5,8 @@ import NavBar from "../components/NavBar";
 import MobileBottomNav from "../components/MobileBottomNav";
 import { ToastProvider } from "../components/Toast";
 import ApiDocsPanel from "../components/ApiDocsPanel";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { CartProvider } from "@/contexts/CartContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,14 +33,18 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ToastProvider>
-          <NavBar />
-          <div className="container mx-auto p-4 pb-20 md:pb-4">
-            {children}
-          </div>
-          <MobileBottomNav />
-          <ApiDocsPanel />
-        </ToastProvider>
+        <AuthProvider>
+          <CartProvider>
+            <ToastProvider>
+              <NavBar />
+              <div className="container mx-auto p-4 pb-20 md:pb-4">
+                {children}
+              </div>
+              <MobileBottomNav />
+              <ApiDocsPanel />
+            </ToastProvider>
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

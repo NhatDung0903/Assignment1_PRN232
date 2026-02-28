@@ -1,6 +1,23 @@
 import { prisma } from '../src/lib/prisma';
+import bcrypt from 'bcryptjs';
 
 async function main() {
+  // Create admin account
+  const hashedPassword = await bcrypt.hash('admin123', 10);
+  
+  await prisma.user.upsert({
+    where: { email: 'admin@admin.com' },
+    update: {},
+    create: {
+      email: 'admin@admin.com',
+      password: hashedPassword,
+      role: 'admin',
+    },
+  });
+
+  console.log('✅ Admin account created: admin@admin.com / admin123');
+
+  // Create sample products
   await prisma.product.createMany({
     data: [
       {
